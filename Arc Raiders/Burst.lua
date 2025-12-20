@@ -33,11 +33,7 @@ local LG_MOUSE_BUTTON = {
  LG_SCROLL_RIGHT    = 11,    -- Scroll Wheel Right
 }
 
--- user global vars
-local g_firing = false
-
 -- Sample times for burst fire in milliseconds for input derived humanization
---- down - up - pause - down - up
 --- randomization seeds will be created based on these values
 local g_samples = {
     {69, 54, 95, 38, 86},
@@ -55,33 +51,24 @@ math.randomseed(GetRunningTime()) -- seed random number generator
 function OnEvent(event, arg)
 
     if IsKeyLockOn(LG_KEY_LOCK.LG_LOCK_NUM) == false then
-        -- OutputLogMessage("end\n")
+        -- OutputLogMessage("script disabled. toggle num lock to activate.\n")
         return -- do nothing if num lock is off
     end
 
     if event == LG_EVENT.LG_DEACTIVATED then -- safety shutdown
-        g_firing = false
         ReleaseMouseButton(LG_MOUSE_BUTTON.LG_LEFT)
     end
 
-    if event == LG_EVENT.LG_MOUSE_DOWN then
+    if event == LG_EVENT.LG_MOUSE_DOWN then -- mouse button pressed
         OnMousePressed(arg)
-    elseif event == LG_EVENT.LG_MOUSE_UP then
-        OnMouseReleased(arg)
     end
+
 end
 
 -- Mouse Button Handler
 function OnMousePressed(btn)
-    if btn == LG_MOUSE_BUTTON.LG_DPI_SCALE and not g_firing then
-        BurstFire()
-    end
-end
-
--- Mouse Button Handler
-function OnMouseReleased(btn)
     if btn == LG_MOUSE_BUTTON.LG_DPI_SCALE then
-        g_firing = false
+        BurstFire()
     end
 end
 
@@ -119,7 +106,7 @@ function BurstFire()
             -- OutputLogMessage("- UP "..t.."\n")
         end
     end
-     
+
     ReleaseMouseButton(LG_MOUSE_BUTTON.LG_LEFT)
 
 end
